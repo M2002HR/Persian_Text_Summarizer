@@ -14,8 +14,8 @@ A Persian text summarization app and evaluation framework using summarization mo
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/persian-summarizer.git
-    cd persian-summarizer
+    git clone https://github.com/M2002HR/Persian_Text_Summarizer.git
+    cd Persian_Text_Summarizer
     ```
 
 2. Create a virtual environment (optional but recommended):
