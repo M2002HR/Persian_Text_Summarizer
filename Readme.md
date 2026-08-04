@@ -1,82 +1,100 @@
-# 🧠 Persian Text Summarizer
+# Persian Text Summarizer
 
-A Persian text summarization app and evaluation framework using summarization models from Hugging Face.
+**A Persian abstractive-summarization service with a Flask web interface, REST API, configurable generation controls, and ROUGE evaluation.**
 
-## 🔧 Features
+The project serves Hugging Face sequence-to-sequence summarization models through both a browser interface and a programmatic API. It also includes a batch-evaluation workflow for measuring summary quality against reference texts.
 
-- Web interface for interactive summarization (Flask-based)
-- REST API endpoint (`/api/summarize`) for programmatic access
-- Configurable length controls via `config.json`
-- Built-in evaluation using ROUGE metrics
-- Supports batch evaluation with progress bar
+## Engineering highlights
 
-## 📦 Installation
+- Persian abstractive summarization with transformer models
+- Flask-based web application
+- JSON REST API for programmatic inference
+- Configurable model and length controls
+- Batch evaluation with progress reporting
+- ROUGE-1, ROUGE-2, and ROUGE-L metrics
+- Separation between application, configuration, model inference, and evaluation workflows
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/M2002HR/Persian_Text_Summarizer.git
-    cd Persian_Text_Summarizer
-    ```
+## Technology
 
-2. Create a virtual environment (optional but recommended):
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
+`Python` · `Flask` · `Hugging Face Transformers` · `PyTorch` · `Persian NLP` · `ROUGE`
 
-3. Install required packages:
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Architecture
 
-## 🚀 Usage
+```text
+Web UI or API client
+        │
+        ▼
+Flask application
+        │
+        ▼
+Input validation and length controls
+        │
+        ▼
+Hugging Face summarization model
+        │
+        ▼
+Generated Persian summary
 
-### 🌐 Web App
-Run the web application:
+Evaluation dataset
+        │
+        ▼
+Batch inference ──► ROUGE metrics
+```
+
+## Features
+
+- interactive summarization from the web interface
+- `POST /api/summarize` endpoint
+- model selection through `config.json`
+- proportional and absolute minimum/maximum summary lengths
+- configurable server host, port, and debug mode
+- dataset-driven evaluation
+- aggregate ROUGE reporting
+
+## Quick start
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 python app.py
-````
+```
 
-Then open your browser and go to: [http://127.0.0.1:5000](http://127.0.0.1:5000)
+Open the application at:
 
-### 🧪 Evaluation
+```text
+http://127.0.0.1:5000
+```
 
-Evaluate your summarizer on the dataset:
+## API example
+
+```bash
+curl -X POST http://127.0.0.1:5000/api/summarize \
+  -H "Content-Type: application/json" \
+  -d '{"text":"متنی برای خلاصه‌سازی"}'
+```
+
+## Evaluation
+
+Run batch evaluation against the configured dataset:
 
 ```bash
 python evaluate.py
 ```
 
-The evaluation script uses `ROUGE` scores and shows results like:
+The evaluator reports aggregate scores such as:
 
-```
-📊 Average ROUGE scores:
-rouge1: 0.4123
-rouge2: 0.2157
-rougeL: 0.3978
-```
-
-### 📡 API
-
-You can send a POST request to `/api/summarize`:
-
-```bash
-curl -X POST http://127.0.0.1:5000/api/summarize \
-    -H "Content-Type: application/json" \
-    -d '{"text": "متنی برای خلاصه‌سازی"}'
+```text
+ROUGE-1
+ROUGE-2
+ROUGE-L
 ```
 
-## 🛠 Config
+These metrics compare generated summaries with reference summaries. They are useful for controlled experiments but should be interpreted together with qualitative review, especially for Persian fluency and factual consistency.
 
-Edit `config.json` to control:
+## Configuration
 
-* Model name
-* Length ratios & hard caps
-* Server host/port
-* Evaluation dataset path
-
-Example:
+`config.json` controls the model and runtime behavior:
 
 ```json
 {
@@ -94,3 +112,16 @@ Example:
 }
 ```
 
+Length ratios allow generation bounds to adapt to the input while the hard floors and ceilings prevent extreme output sizes.
+
+## Model and evaluation notes
+
+- Model quality depends on the selected checkpoint and its training data.
+- Long documents may require chunking or a model with a larger context window.
+- ROUGE primarily measures lexical overlap and does not fully capture factuality or writing quality.
+- The default configuration is appropriate for local experimentation, not unattended public deployment.
+- Production deployment should add authentication, request limits, structured logging, timeouts, and model-resource monitoring.
+
+## Project status
+
+This repository is a focused NLP application demonstrating model serving, API design, configurable inference, Persian-language processing, and quantitative evaluation.
